@@ -22,11 +22,11 @@ export default function Navbar({
 
   const logoutHandler = () => {
     axios
-      .post("/auth/logout", {})
+      .post("/v1/auth/logout", {})
       .then((response) => {
         alert(response.data.message)
         //get per effettuare il check sui cookie settati
-        axios.get("/auth/check").then((response) => {
+        axios.get("/v1/auth/check").then((response) => {
           setLogged(response.data.isLogged)
           setLoggedUser(response.data.user)
         })
@@ -34,7 +34,7 @@ export default function Navbar({
       })
       .catch((error) => {
         alert(error.response.data.message)
-        axios.get("/auth/check").then((response) => {
+        axios.get("/v1/auth/check").then((response) => {
           setLogged(response.data.isLogged)
           setLoggedUser(response.data.user)
         })

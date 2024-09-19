@@ -36,7 +36,7 @@ export default function Home({
   let UserIcon = L.icon({
     iconUrl: markerIconRed, // Usa l'icona rossa
     shadowUrl: markerShadow,
-    iconSize: [40, 50],
+    iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
     shadowSize: [41, 41],

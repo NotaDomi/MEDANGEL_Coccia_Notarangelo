@@ -33,39 +33,39 @@ export default function EventForm({
         ? new Date(selectedEvent.end_date).toISOString().split("T")[0]
         : "";
 
-        setFormData({
-          ...selectedEvent,
-          start_date: formattedStartDate,
-          end_date: formattedEndDate,
-          time1:
-            selectedEvent.time.length > 0
-              ? `${selectedEvent.time[0].hour
-                  .toString()
-                  .padStart(2, "0")}:${selectedEvent.time[0].minute
-                  .toString()
-                  .padStart(2, "0")}`
-              : "",
-          time2:
-            selectedEvent.time.length > 1
-              ? `${selectedEvent.time[1].hour
-                  .toString()
-                  .padStart(2, "0")}:${selectedEvent.time[1].minute
-                  .toString()
-                  .padStart(2, "0")}`
-              : "",
-          time3:
-            selectedEvent.time.length > 2
-              ? `${selectedEvent.time[2].hour
-                  .toString()
-                  .padStart(2, "0")}:${selectedEvent.time[2].minute
-                  .toString()
-                  .padStart(2, "0")}`
-              : "",
-        });
-  
-        // Attiviamo i campi time2 e time3 solo se hanno un valore
-        setShowTime2(selectedEvent.time.length > 1);
-        setShowTime3(selectedEvent.time.length > 2);
+      setFormData({
+        ...selectedEvent,
+        start_date: formattedStartDate,
+        end_date: formattedEndDate,
+        time1:
+          selectedEvent.time.length > 0
+            ? `${selectedEvent.time[0].hour
+                .toString()
+                .padStart(2, "0")}:${selectedEvent.time[0].minute
+                .toString()
+                .padStart(2, "0")}`
+            : "",
+        time2:
+          selectedEvent.time.length > 1
+            ? `${selectedEvent.time[1].hour
+                .toString()
+                .padStart(2, "0")}:${selectedEvent.time[1].minute
+                .toString()
+                .padStart(2, "0")}`
+            : "",
+        time3:
+          selectedEvent.time.length > 2
+            ? `${selectedEvent.time[2].hour
+                .toString()
+                .padStart(2, "0")}:${selectedEvent.time[2].minute
+                .toString()
+                .padStart(2, "0")}`
+            : "",
+      });
+
+      // Attiviamo i campi time2 e time3 solo se hanno un valore
+      setShowTime2(selectedEvent.time.length > 1);
+      setShowTime3(selectedEvent.time.length > 2);
     } else {
       // Imposta un nuovo form vuoto se selectedEvent è nullo
       setFormData({
@@ -135,7 +135,7 @@ export default function EventForm({
     };
     if (selectedEvent) {
       axios
-        .put(`/api/calendar/events/${selectedEvent._id}`, eventData)
+        .put(`/v1/api/calendar/events/${selectedEvent._id}`, eventData)
         .then((res) => {
           setEvents((prev) =>
             prev.map((ev) =>
@@ -147,7 +147,7 @@ export default function EventForm({
         .catch((error) => alert(error.response.data.message));
     } else {
       axios
-        .post("/api/calendar/events", eventData)
+        .post("/v1/api/calendar/events", eventData)
         .then((res) => {
           setEvents((prev) => [...prev, res.data.event]);
           setClick(false);
@@ -199,52 +199,55 @@ export default function EventForm({
         </div>
 
         {/* Attiva/disattiva Orario 2 */}
-        <div className="form-group">
-          <label id="time2">
-            <input
-              type="checkbox"
-              checked={showTime2}
-              onChange={() => setShowTime2(!showTime2)}
-            />
-            Aggiungi un secondo orario
+        <div className="form-group" id="time2">
+          <input
+            type="checkbox"
+            checked={showTime2}
+            onChange={() => setShowTime2(!showTime2)}
+          />
+          <label
+            htmlFor="time2"
+            style={{ color: showTime2 ? "black" : "lightgray" }}
+          >
+            Orario 2:
           </label>
+          <input
+            type="time"
+            id="time2"
+            name="time2"
+            value={formData.time2}
+            onChange={handleInputChange}
+            disabled={!showTime2} // Disabilitato se il checkbox non è selezionato
+            style={{
+              backgroundColor: showTime2 ? "white" : "lightgray",
+            }}
+          />
         </div>
-        {showTime2 && (
-          <div className="form-group" id="time2">
-            <label htmlFor="time2">Orario 2:</label>
-            <input
-              type="time"
-              id="time2"
-              name="time2"
-              value={formData.time2}
-              onChange={handleInputChange}
-            />
-          </div>
-        )}
 
-        {/* Attiva/disattiva Orario 3 */}
-        <div className="form-group">
-          <label id="time3">
-            <input
-              type="checkbox"
-              checked={showTime3}
-              onChange={() => setShowTime3(!showTime3)}
-            />
-            Aggiungi un terzo orario
+        <div className="form-group" id="time3">
+          <input
+            type="checkbox"
+            checked={showTime3}
+            onChange={() => setShowTime3(!showTime3)}
+          />
+          <label
+            htmlFor="time3"
+            style={{ color: showTime3 ? "black" : "lightgray" }}
+          >
+            Orario 3:
           </label>
+          <input
+            type="time"
+            id="time3"
+            name="time3"
+            value={formData.time3}
+            onChange={handleInputChange}
+            disabled={!showTime3} // Disabilitato se il checkbox non è selezionato
+            style={{
+              backgroundColor: showTime3 ? "white" : "lightgray",
+            }}
+          />
         </div>
-        {showTime3 && (
-          <div className="form-group" id="time3">
-            <label htmlFor="time3">Orario 3:</label>
-            <input
-              type="time"
-              id="time3"
-              name="time3"
-              value={formData.time3}
-              onChange={handleInputChange}
-            />
-          </div>
-        )}
       </div>
 
       {/* Giorni della settimana */}
@@ -275,48 +278,50 @@ export default function EventForm({
         </div>
       </div>
 
-      {/* Pattern settimanale */}
-      <div className="form-group" id="week_pattern">
-        <label htmlFor="week_pattern">Frequenza:</label>
-        <div className="week_pattern1">
-          <select
-            id="week_pattern"
-            name="week_pattern"
-            value={formData.week_pattern}
+      <div className="form-group" id="frequency-dates">
+        {/* Pattern settimanale */}
+        <div className="form-group" id="week_pattern">
+          <label htmlFor="week_pattern">Frequenza:</label>
+          <div className="week_pattern1">
+            <select
+              id="week_pattern"
+              name="week_pattern"
+              value={formData.week_pattern}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="all">Tutte le settimane</option>
+              <option value="even_weeks">Settimane pari</option>
+              <option value="odd_weeks">Settimane dispari</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Data di inizio */}
+        <div className="form-group" id="start_date">
+          <label htmlFor="start_date">Data di inizio:</label>
+          <input
+            type="date"
+            id="start_date"
+            name="start_date"
+            value={formData.start_date}
             onChange={handleInputChange}
             required
-          >
-            <option value="all">Tutte le settimane</option>
-            <option value="even_weeks">Settimane pari</option>
-            <option value="odd_weeks">Settimane dispari</option>
-          </select>
+          />
         </div>
-      </div>
 
-      {/* Data di inizio */}
-      <div className="form-group" id="start_date">
-        <label htmlFor="start_date">Data di inizio:</label>
-        <input
-          type="date"
-          id="start_date"
-          name="start_date"
-          value={formData.start_date}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-
-      {/* Data di fine */}
-      <div className="form-group" id="end_date">
-        <label htmlFor="end_date">Data di fine:</label>
-        <input
-          type="date"
-          id="end_date"
-          name="end_date"
-          value={formData.end_date}
-          onChange={handleInputChange}
-          required
-        />
+        {/* Data di fine */}
+        <div className="form-group" id="end_date">
+          <label htmlFor="end_date">Data di fine:</label>
+          <input
+            type="date"
+            id="end_date"
+            name="end_date"
+            value={formData.end_date}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
       </div>
 
       {/* Pulsanti di controllo */}

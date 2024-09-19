@@ -20,7 +20,7 @@ export default function Event({
   const deleteEvent = () => {
     setIsButtonDisabled(true)
     axios
-      .delete(`/api/calendar/events/${event._id}`)
+      .delete(`/v1/api/calendar/events/${event._id}`)
       .then((res) => {
         alert(res.data.message)
         setEvents(events.filter((e) => e._id !== event._id))
@@ -28,7 +28,7 @@ export default function Event({
       })
       .catch((error) => {
         alert(error.response.data.message)
-        axios.get("/auth/check").then((response) => {
+        axios.get("/v1/auth/check").then((response) => {
           setLogged(response.data.isLogged)
           setLoggedUser(response.data.user)
           setIsButtonDisabled(false)
