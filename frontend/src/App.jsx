@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./App.css";
 
 import Home from "./pages/Home";
@@ -35,7 +36,7 @@ export default function App() {
   in base alle informazioni correnti
   */
   useEffect(() => {
-    axios.get("/auth/check").then((response) => {
+    axios.get("/v1/auth/check").then((response) => {
       setLogged(response.data.isLogged);
       setLoggedUser(response.data.user);
     });

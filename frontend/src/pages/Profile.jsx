@@ -64,7 +64,7 @@ export default function Profile({
     }
 
     axios
-      .put("/auth/update", updatedUserData)
+      .put("/v1/auth/update", updatedUserData)
       .then((res) => {
         alert("Profilo aggiornato con successo!")
         setLoggedUser(res.data.updatedUser)

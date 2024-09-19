@@ -57,7 +57,7 @@ export default function Home({
   useEffect(() => {
     if (userResidenceLat && userResidenceLon) {
       axios
-        .get("/api/pharmacy/findNearbyPharmacies", {
+        .get("/v1/api/pharmacy/findNearbyPharmacies", {
           params: {
             latitude: userResidenceLat, // Invia la latitudine della residenza dell'utente
             longitude: userResidenceLon, // Invia la longitudine della residenza dell'utente
@@ -69,7 +69,7 @@ export default function Home({
         })
         .catch((error) => {
           alert(error.response.data.message)
-          axios.get("/auth/check").then((response) => {
+          axios.get("/v1/auth/check").then((response) => {
             setLogged(error.response.data.isLogged)
             setLoggedUser(error.response.data.user)
             setIsButtonDisabled(false)
@@ -78,14 +78,14 @@ export default function Home({
         })
 
       axios
-        .post("/api/calendar/getRecurringEvents", { user_id: loggedUser._id })
+        .post("/v1/api/calendar/getRecurringEvents", { user_id: loggedUser._id })
         .then((res) => {
           setAllEvents(res.data)
           setLoading(false)
         })
         .catch((error) => {
           alert(error.response.data.message)
-          axios.get("/auth/check").then((response) => {
+          axios.get("/v1/auth/check").then((response) => {
             setLogged(error.response.data.isLogged)
             setLoggedUser(error.response.data.user)
             setIsButtonDisabled(false)

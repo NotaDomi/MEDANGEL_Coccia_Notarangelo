@@ -25,7 +25,7 @@ export default function EventPage({
   // Caricamento iniziale degli eventi
   useEffect(() => {
     axios
-      .post("/api/calendar/getEvents", { user_id: loggedUser._id })
+      .post("/v1/api/calendar/getEvents", { user_id: loggedUser._id })
       .then((res) => {
         setEvents(res.data) // Salva gli eventi nel state
         setLoading(false) // Termina il caricamento
@@ -33,7 +33,7 @@ export default function EventPage({
       .catch((error) => {
         alert(error.response.data.message)
         axios
-          .get("/auth/check") // Controlla se l'utente è loggato
+          .get("/v1/auth/check") // Controlla se l'utente è loggato
           .then((response) => {
             setLogged(response.data.isLogged)
             setLoggedUser(response.data.user)
