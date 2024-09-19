@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+
 *::-webkit-scrollbar {
   width: 7px; /* Larghezza della scrollbar */
 }
@@ -134,14 +136,12 @@
   margin-bottom: 15px;
 }
 
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
-
 * {
   box-sizing: border-box;
 }
 
 body {
-  background: url("../public/sfondo.svg");
+  background: url("./img/sfondo.svg");
   background-repeat: no-repeat;
   display: flex;
   justify-content: center;
