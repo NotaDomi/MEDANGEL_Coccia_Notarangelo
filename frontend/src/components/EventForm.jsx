@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import axios from "axios"
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function EventForm({
   loggedUser,
@@ -11,87 +11,128 @@ export default function EventForm({
     user_id: loggedUser._id,
     medicine_name: "",
     description: "",
-    time: "",
+    time1: "", // Orario 1
+    time2: "", // Orario 2
+    time3: "", // Orario 3
     days_of_week: [],
     week_pattern: "all",
     start_date: "",
     end_date: "",
-  })
+  });
+
+  const [showTime2, setShowTime2] = useState(false); // Stato per attivare/disattivare time2
+  const [showTime3, setShowTime3] = useState(false); // Stato per attivare/disattivare time3
 
   useEffect(() => {
     if (selectedEvent) {
       // Se l'evento ha una data di inizio o di fine, formattala in "YYYY-MM-DD"
       const formattedStartDate = selectedEvent.start_date
         ? new Date(selectedEvent.start_date).toISOString().split("T")[0]
-        : ""
+        : "";
       const formattedEndDate = selectedEvent.end_date
         ? new Date(selectedEvent.end_date).toISOString().split("T")[0]
-        : ""
+        : "";
 
-      setFormData({
-        ...selectedEvent,
-        start_date: formattedStartDate, // Assegna la data formattata
-        end_date: formattedEndDate, // Assegna la data formattata
-        time:
-          selectedEvent.time.length > 0
-            ? `${selectedEvent.time[0].hour
-                .toString()
-                .padStart(2, "0")}:${selectedEvent.time[0].minute
-                .toString()
-                .padStart(2, "0")}`
-            : "",
-      })
+        setFormData({
+          ...selectedEvent,
+          start_date: formattedStartDate,
+          end_date: formattedEndDate,
+          time1:
+            selectedEvent.time.length > 0
+              ? `${selectedEvent.time[0].hour
+                  .toString()
+                  .padStart(2, "0")}:${selectedEvent.time[0].minute
+                  .toString()
+                  .padStart(2, "0")}`
+              : "",
+          time2:
+            selectedEvent.time.length > 1
+              ? `${selectedEvent.time[1].hour
+                  .toString()
+                  .padStart(2, "0")}:${selectedEvent.time[1].minute
+                  .toString()
+                  .padStart(2, "0")}`
+              : "",
+          time3:
+            selectedEvent.time.length > 2
+              ? `${selectedEvent.time[2].hour
+                  .toString()
+                  .padStart(2, "0")}:${selectedEvent.time[2].minute
+                  .toString()
+                  .padStart(2, "0")}`
+              : "",
+        });
+  
+        // Attiviamo i campi time2 e time3 solo se hanno un valore
+        setShowTime2(selectedEvent.time.length > 1);
+        setShowTime3(selectedEvent.time.length > 2);
     } else {
       // Imposta un nuovo form vuoto se selectedEvent è nullo
       setFormData({
         user_id: loggedUser._id,
         medicine_name: "",
         description: "",
-        time: "",
+        time1: "",
+        time2: "",
+        time3: "",
         days_of_week: [],
         week_pattern: "all",
         start_date: "",
         end_date: "",
-      })
+      });
+      setShowTime2(false); // Disattivato per default
+      setShowTime3(false); // Disattivato per default
     }
-  }, [selectedEvent, loggedUser._id])
+  }, [selectedEvent, loggedUser._id]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
-    })
-  }
+    });
+  };
 
   const handleTimeChange = (e) => {
     setFormData({
       ...formData,
       time: e.target.value,
-    })
-  }
+    });
+  };
 
   const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target
+    const { value, checked } = e.target;
     const updatedDays = checked
       ? [...formData.days_of_week, value]
-      : formData.days_of_week.filter((day) => day !== value)
+      : formData.days_of_week.filter((day) => day !== value);
 
     setFormData({
       ...formData,
       days_of_week: updatedDays,
-    })
-  }
+    });
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    const [hour, minute] = formData.time.split(":")
+    e.preventDefault();
+
+    const times = [];
+    if (formData.time1) {
+      const [hour1, minute1] = formData.time1.split(":");
+      times.push({ hour: parseInt(hour1), minute: parseInt(minute1) });
+    }
+    if (showTime2 && formData.time2) {
+      const [hour2, minute2] = formData.time2.split(":");
+      times.push({ hour: parseInt(hour2), minute: parseInt(minute2) });
+    }
+    if (showTime3 && formData.time3) {
+      const [hour3, minute3] = formData.time3.split(":");
+      times.push({ hour: parseInt(hour3), minute: parseInt(minute3) });
+    }
+
     const eventData = {
       ...formData,
-      time: formData.time
-        ? [{ hour: parseInt(hour), minute: parseInt(minute) }]
-        : [], // Ensure time is an array of objects
-    }
+      time: times, // Invia solo i campi attivi
+    };
     if (selectedEvent) {
       axios
         .put(`/api/calendar/events/${selectedEvent._id}`, eventData)
@@ -100,20 +141,20 @@ export default function EventForm({
             prev.map((ev) =>
               ev._id === res.data.event._id ? res.data.event : ev
             )
-          )
-          setClick(false)
+          );
+          setClick(false);
         })
-        .catch((error) => alert(error.response.data.message))
+        .catch((error) => alert(error.response.data.message));
     } else {
       axios
         .post("/api/calendar/events", eventData)
         .then((res) => {
-          setEvents((prev) => [...prev, res.data.event])
-          setClick(false)
+          setEvents((prev) => [...prev, res.data.event]);
+          setClick(false);
         })
-        .catch((error) => alert(error.response.data.message))
+        .catch((error) => alert(error.response.data.message));
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -144,17 +185,66 @@ export default function EventForm({
         />
       </div>
 
-      {/* Orario */}
-      <div className="form-group" id="time">
-        <label htmlFor="time">Orario:</label>
-        <input
-          type="time"
-          id="time"
-          name="time"
-          value={formData.time}
-          onChange={handleTimeChange}
-          required
-        />
+      <div className="form-group" id="times">
+        {/* Orario 1 */}
+        <div className="form-group" id="time1">
+          <label htmlFor="time1">Orario:</label>
+          <input
+            type="time"
+            id="time1"
+            name="time1"
+            value={formData.time1}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        {/* Attiva/disattiva Orario 2 */}
+        <div className="form-group">
+          <label id="time2">
+            <input
+              type="checkbox"
+              checked={showTime2}
+              onChange={() => setShowTime2(!showTime2)}
+            />
+            Aggiungi un secondo orario
+          </label>
+        </div>
+        {showTime2 && (
+          <div className="form-group" id="time2">
+            <label htmlFor="time2">Orario 2:</label>
+            <input
+              type="time"
+              id="time2"
+              name="time2"
+              value={formData.time2}
+              onChange={handleInputChange}
+            />
+          </div>
+        )}
+
+        {/* Attiva/disattiva Orario 3 */}
+        <div className="form-group">
+          <label id="time3">
+            <input
+              type="checkbox"
+              checked={showTime3}
+              onChange={() => setShowTime3(!showTime3)}
+            />
+            Aggiungi un terzo orario
+          </label>
+        </div>
+        {showTime3 && (
+          <div className="form-group" id="time3">
+            <label htmlFor="time3">Orario 3:</label>
+            <input
+              type="time"
+              id="time3"
+              name="time3"
+              value={formData.time3}
+              onChange={handleInputChange}
+            />
+          </div>
+        )}
       </div>
 
       {/* Giorni della settimana */}
@@ -237,5 +327,5 @@ export default function EventForm({
         </button>
       </div>
     </form>
-  )
+  );
 }
