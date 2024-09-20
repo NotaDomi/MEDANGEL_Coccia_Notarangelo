@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react"
 import Calendar from "react-calendar"
 import moment from "moment"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome" // Assumendo che tu stia usando FontAwesome
-import { faMedkit, faClock } from "@fortawesome/free-solid-svg-icons" // Nuova icona più estetica
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faMedkit,
+  faClock,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons"
 import "moment/locale/it"
 
 export default function CalendarWithEvents({ allEvents }) {
   moment.locale("it")
+
   // Imposta la data corrente come valore di default
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [eventsForSelectedDate, setEventsForSelectedDate] = useState([])
+  const [completedEvents, setCompletedEvents] = useState({})
+
+  // Stato per tracciare i timer impostati
+  const [activeTimers, setActiveTimers] = useState([])
 
   // Funzione per verificare se l'evento è esattamente nella data specifica
   const isEventOnDate = (date, event) => {
@@ -18,9 +27,34 @@ export default function CalendarWithEvents({ allEvents }) {
     return eventDate === selectedFormattedDate // Verifica se la data è la stessa
   }
 
+  // Funzione per segnare/unsegnare un evento come completato
+  const toggleCompleted = (eventId) => {
+    setCompletedEvents((prevCompleted) => ({
+      ...prevCompleted,
+      [eventId]: !prevCompleted[eventId], // Inverte lo stato di completamento
+    }))
+  }
+
+  // Funzione per impostare un timer che avvisa l'utente
+  const setReminderTimer = (event) => {
+    const eventTime = moment(event.time, "HH:mm")
+    const now = moment()
+
+    if (eventTime.isAfter(now)) {
+      const timeUntilEvent = eventTime.diff(now)
+      const timer = setTimeout(() => {
+        alert(`Promemoria: È l'ora di prendere ${event.medicine_name}`)
+      }, timeUntilEvent)
+
+      // Salva il timer
+      setActiveTimers((prevTimers) => [...prevTimers, timer])
+    }
+  }
+
   // Quando si seleziona una data nel calendario
   const onDateClick = (date) => {
     setSelectedDate(date)
+
     // Filtra gli eventi che si verificano nella data selezionata
     const eventsOnThatDate = allEvents.filter((event) =>
       isEventOnDate(date, event)
@@ -54,6 +88,21 @@ export default function CalendarWithEvents({ allEvents }) {
     )
   }
 
+  // Imposta i reminder per gli eventi del giorno corrente
+  useEffect(() => {
+    const today = moment().format("YYYY-MM-DD")
+    const eventsToday = allEvents.filter((event) =>
+      isEventOnDate(today, event)
+    )
+
+    // Cancella i timer precedenti per evitare duplicazioni
+    activeTimers.forEach((timer) => clearTimeout(timer))
+    setActiveTimers([]) // Ripristina lo stato
+
+    // Imposta i timer per gli eventi di oggi
+    eventsToday.forEach((event) => setReminderTimer(event))
+  }, [allEvents])
+
   // Filtra gli eventi per la data corrente al caricamento della pagina
   useEffect(() => {
     const eventsOnThatDate = allEvents.filter((event) =>
@@ -81,18 +130,42 @@ export default function CalendarWithEvents({ allEvents }) {
               eventsForSelectedDate
                 .sort((a, b) => a.time.localeCompare(b.time)) // Ordina gli eventi per orario
                 .map((event) => (
-                  <div className="event-popup" key={event._id}>
-                    <strong>{event.medicine_name}</strong> -{" "}
+                  <div
+                    className={`event-popup ${
+                      completedEvents[event._id] ? "completed" : ""
+                    }`} // Applica la classe "completed" se l'evento è completato
+                    key={event._id}
+                  >
+                    <strong
+                      style={{
+                        textDecoration: completedEvents[event._id]
+                          ? "line-through"
+                          : "none",
+                        color: completedEvents[event._id] ? "gray" : "black",
+                      }}
+                    >
+                      {event.medicine_name}
+                    </strong>{" "}
+                    -{" "}
                     <FontAwesomeIcon
                       icon={faClock}
                       style={{
-                        color: "white", // Cambia il colore dell'icona
-                        backgroundColor: "black", // Cambia il colore di sfondo
-                        borderRadius: "50%", // Aggiungi un bordo circolare se lo desideri
+                        color: "white",
+                        backgroundColor: "black",
+                        borderRadius: "50%",
                         padding: "0.1vh",
                       }}
                     />{" "}
                     {event.time}
+                    <FontAwesomeIcon
+                      icon={faCheckCircle}
+                      onClick={() => toggleCompleted(event._id)}
+                      style={{
+                        cursor: "pointer",
+                        color: completedEvents[event._id] ? "green" : "gray",
+                        marginLeft: "10px",
+                      }}
+                    />
                     <br />
                     {event.description}
                   </div>

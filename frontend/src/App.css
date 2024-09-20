@@ -297,6 +297,23 @@ select:valid {
   z-index: 1;
 }
 
+.sign-up-container button:hover,
+.sign-in-container button:hover {
+  transform: scale(1.05);
+  background-color: rgba(20, 156, 156, 0.792);
+}
+
+.sign-up-container button:hover,
+.sign-in-container button:hover {
+  transform: scale(1.05);
+  background-color: rgba(20, 156, 156, 0.792);
+}
+
+.overlay-container button:hover {
+  transform: scale(1.05);
+  background-color: rgb(105, 196, 196);
+}
+
 .container.right-panel-active .sign-up-container {
   transform: translateX(100%);
   opacity: 1;
@@ -1193,7 +1210,7 @@ nav li:hover {
 }
 
 .react-calendar {
-  margin: 1.5vh 0vh 1.5vh 0vh;
+  margin: 1vh 0vh 1.5vh 0vh;
   font-size: 1.75vmin;
 }
 
@@ -1209,7 +1226,7 @@ nav li:hover {
   background-color: rgb(255, 255, 255);
   box-shadow: 4px 4px 10px rgba(66, 66, 66, 0.568);
   border-radius: 10px;
-  margin: 1.5vh 1.5vw 1.5vh 1.5vw;
+  margin: 1.2vh 1.5vw 1.2vh 1.5vw;
   text-align: center;
   padding: 0.8vh;
   word-wrap: break-word; /* Forza la sillabazione delle parole */
@@ -1221,8 +1238,12 @@ nav li:hover {
   transform: scale(1.05);
 }
 
+.event-popup svg[data-icon='circle-check']{
+  font-size: 1.12em;
+}
+
 .event-details {
-  height: 17.8vh;
+  height: 17.9vh;
   overflow-y: scroll;
   overflow-x: hidden;
   margin-left: 11px;
@@ -1232,13 +1253,14 @@ nav li:hover {
 
 .calendar-list h1 {
   font-weight: bold;
-  font-size: 0.9vw;
-  margin-bottom: 1.1vh;
+  font-size: 1.8vh;
+
   text-align: center;
   color: white;
 }
 
 .event-details p {
+  padding-top: 8vh;
   text-align: center;
   color: white;
 }
@@ -1250,7 +1272,7 @@ nav li:hover {
   background-color: #fff; /* Sfondo del calendario */
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  padding: 0.9vw;
+  padding: 0.6vh 0.9vw 0.6vh 0.9vw;
   font-family: "Arial", sans-serif;
   /*height: 47.7vh !important;*/
 }
@@ -1287,9 +1309,10 @@ nav li:hover {
 /* Stile per la barra di navigazione (mesi/anni) */
 .react-calendar__navigation {
   display: flex;
+  height: 4vmin !important;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px !important;
+  margin-bottom: 0px !important;
 }
 
 /* Stile per i pulsanti di navigazione (precedente e successivo) */
@@ -1299,6 +1322,7 @@ nav li:hover {
   color: #333;
   font-size: 18px;
   cursor: pointer;
+  height: -webkit-fill-available;
 }
 
 /* Stile per il fine settimana (Sabato, Domenica) */
@@ -1663,11 +1687,13 @@ label#DataNascita {
 }
 
 .dob-container {
+  display: flex;
+  align-content: center;
   padding-top: 0px !important;
   grid-column-start: 2;
   grid-column-end: 4;
   grid-row-start: 5;
-  margin-right: 5px;
+  height: auto;
 }
 
 label#sesso {
@@ -1872,17 +1898,51 @@ input#zipCode {
   margin: auto;
 }
 
-.form-group#frequency-dates{
-  gap:10vmin;
+.form-group#frequency-dates {
+  gap: 10vmin;
   justify-content: center;
   grid-row-start: 8;
   grid-column: 1 / 3;
 }
 
-.form-group#time2{
+.form-group#time2 {
   gap: 1vmin;
 }
 
-.form-group#time3{
+.form-group#time2 [type="checkbox"] {
+  width: 1.4em;
+  height: 1.4em;
+}
+
+.form-group#time3 {
   gap: 1vmin;
+}
+
+.form-group#time3 [type="checkbox"] {
+  width: 1.4em;
+  height: 1.4em;
+}
+
+.form-container .dob-container select,
+.gender select {
+  border: 1px solid white !important;
+  padding-left: 0px !important;
+  padding: 0.4vmin;
+}
+
+.checkbox-group [type="checkbox"] {
+  display: contents;
+}
+
+.checkbox-group label {
+  background-color: white;
+  padding: 0.7vmin;
+  height: 4.5vmin;
+  width: 4.5vmin !important;
+  border-radius: 50%;
+  border: 1px solid rgba(20, 156, 156, 0.792);
+}
+
+.checkbox-group label:hover{
+  cursor: pointer;
 }
