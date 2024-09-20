@@ -1946,3 +1946,7 @@ input#zipCode {
 .checkbox-group label:hover{
   cursor: pointer;
 }
+
+button{
+  cursor: pointer !important;
+}
