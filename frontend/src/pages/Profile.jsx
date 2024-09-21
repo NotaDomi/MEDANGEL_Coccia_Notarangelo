@@ -1,9 +1,12 @@
-import React, { useState } from "react"
-import axios from "axios"
+import React, { useState } from "react";
+import axios from "axios";
+import Modal from "react-modal"; // Importa il Modal
 
-import Navbar from "../components/Navbar"
-import UserForm from "../components/UserForm"
-import UserInfo from "../components/UserInfo" // Importa il nuovo componente
+import Navbar from "../components/Navbar";
+import UserForm from "../components/UserForm";
+import UserInfo from "../components/UserInfo";
+
+Modal.setAppElement("#root"); // Imposta l'elemento principale
 
 export default function Profile({
   isLogged,
@@ -32,17 +35,20 @@ export default function Profile({
     city: loggedUser.citta || "",
     address: loggedUser.indirizzo || "",
     password: "", // Lasciato vuoto per la sicurezza
-  })
+  });
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   // Gestisce i cambiamenti nei campi del modulo
   const handleInfoChange = (e) => {
-    setProfileInfo({ ...profileInfo, [e.target.name]: e.target.value })
-  }
+    setProfileInfo({ ...profileInfo, [e.target.name]: e.target.value });
+  };
 
   // Gestisce l'invio dei dati del modulo
   const handleSubmit = (e) => {
-    e.preventDefault()
-    setIsButtonDisabled(true)
+    e.preventDefault();
+    setIsButtonDisabled(true);
 
     const updatedUserData = {
       id: loggedUser._id,
@@ -56,27 +62,33 @@ export default function Profile({
       zipCode: profileInfo.zipCode,
       city: profileInfo.city,
       address: profileInfo.address,
-    }
+    };
 
     // Aggiungi la password solo se è stata modificata (non vuota)
     if (profileInfo.password && profileInfo.password.trim() !== "") {
-      updatedUserData.password = profileInfo.password
+      updatedUserData.password = profileInfo.password;
     }
 
     axios
       .put("/v1/auth/update", updatedUserData)
       .then((res) => {
-        alert("Profilo aggiornato con successo!")
-        setLoggedUser(res.data.updatedUser)
+        setModalMessage("Profilo aggiornato con successo!");
+        setModalIsOpen(true);
+        setLoggedUser(res.data.updatedUser);
       })
       .catch((error) => {
-        console.error("Errore durante l'aggiornamento del profilo:", error)
-        alert("Errore durante l'aggiornamento del profilo.")
+        console.error("Errore durante l'aggiornamento del profilo:", error);
+        setModalMessage("Errore durante l'aggiornamento del profilo.");
+        setModalIsOpen(true);
       })
       .finally(() => {
-        setIsButtonDisabled(false)
-      })
-  }
+        setIsButtonDisabled(false);
+      });
+  };
+
+  const handleCloseModal = () => {
+    setModalIsOpen(false);
+  };
 
   return (
     <>
@@ -101,6 +113,13 @@ export default function Profile({
           isButtonDisabled={isButtonDisabled}
         />
       </div>
+
+      {/* Modal per i messaggi */}
+      <Modal isOpen={modalIsOpen} onRequestClose={handleCloseModal} contentLabel="Messaggio">
+        <h2>Messaggio</h2>
+        <p>{modalMessage}</p>
+        <button onClick={handleCloseModal}>Chiudi</button>
+      </Modal>
     </>
-  )
+  );
 }

@@ -1,8 +1,11 @@
-import React from "react"
-import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from "react";
+import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 export default function Event({
   event,
@@ -15,32 +18,35 @@ export default function Event({
   isButtonDisabled,
   setIsButtonDisabled,
 }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const deleteEvent = () => {
-    setIsButtonDisabled(true)
+    setIsButtonDisabled(true);
     axios
       .delete(`/v1/api/calendar/events/${event._id}`)
       .then((res) => {
-        alert(res.data.message)
-        setEvents(events.filter((e) => e._id !== event._id))
-        setIsButtonDisabled(false)
+        setEvents(events.filter((e) => e._id !== event._id));
+        setIsButtonDisabled(false);
+        setModalIsOpen(false); // Chiudi il modal di conferma
       })
       .catch((error) => {
-        alert(error.response.data.message)
-        axios.get("/v1/auth/check").then((response) => {
-          setLogged(response.data.isLogged)
-          setLoggedUser(response.data.user)
-          setIsButtonDisabled(false)
-          navigate("/login")
-        })
-      })
-  }
+        setIsButtonDisabled(false);
+        setErrorMessage(error.response.data.message);
+        setModalIsOpen(false); // Chiudi il modal di conferma
+        openErrorModal(); // Apri il modal per errore
+      });
+  };
+
+  const openErrorModal = () => {
+    setModalIsOpen(true);
+  };
 
   const editEvent = () => {
-    setSelectedEvent(event)
-    setClick(true)
-  }
+    setSelectedEvent(event);
+    setClick(true);
+  };
 
   return (
     <>
@@ -56,12 +62,43 @@ export default function Event({
         </button>
         <button
           className="button"
-          onClick={deleteEvent}
+          onClick={() => setModalIsOpen(true)} // Apri il modal per confermare l'eliminazione
           disabled={isButtonDisabled}
         >
           <span> Elimina </span> <FontAwesomeIcon icon={faTrashAlt} />
         </button>
       </div>
+
+      {/* Modal di conferma eliminazione */}
+      <Modal
+        isOpen={modalIsOpen && !errorMessage} // Mostra solo se non c'è errore
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Conferma Eliminazione"
+      >
+        <h2>Conferma Eliminazione</h2>
+        <p>Sei sicuro di voler eliminare questo evento?</p>
+        <button onClick={deleteEvent}>Conferma</button>
+        <button onClick={() => setModalIsOpen(false)}>Annulla</button>
+      </Modal>
+
+      {/* Modal per messaggio di errore */}
+      <Modal
+        isOpen={!!errorMessage} // Mostra il modal se c'è un messaggio di errore
+        onRequestClose={() => {
+          setErrorMessage("");
+          setModalIsOpen(false);
+        }}
+        contentLabel="Errore"
+      >
+        <h2>Errore</h2>
+        <p>{errorMessage}</p>
+        <button onClick={() => {
+          setErrorMessage("");
+          setModalIsOpen(false);
+        }}>
+          Chiudi
+        </button>
+      </Modal>
     </>
-  )
+  );
 }

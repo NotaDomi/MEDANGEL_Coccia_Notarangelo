@@ -177,7 +177,7 @@ export default function EventForm({
           )
           setClick(false)
         })
-        .catch((error) => alert(error.response.data.message))
+        .catch((error) => console.log(error.response.data.message))
     } else {
       axios
         .post("/v1/api/calendar/events", eventData)
@@ -185,7 +185,7 @@ export default function EventForm({
           setEvents((prev) => [...prev, res.data.event])
           setClick(false)
         })
-        .catch((error) => alert(error.response.data.message))
+        .catch((error) => console.log(error.response.data.message))
     }
   }
 

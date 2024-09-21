@@ -31,7 +31,7 @@ export default function EventPage({
         setLoading(false) // Termina il caricamento
       })
       .catch((error) => {
-        alert(error.response.data.message)
+        console.log(error.response.data.message)
         axios
           .get("/v1/auth/check") // Controlla se l'utente è loggato
           .then((response) => {

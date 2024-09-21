@@ -68,7 +68,7 @@ export default function Home({
           setLoading(false)
         })
         .catch((error) => {
-          alert(error.response.data.message)
+          console.log(error.response.data.message)
           axios.get("/v1/auth/check").then((response) => {
             setLogged(error.response.data.isLogged)
             setLoggedUser(error.response.data.user)
@@ -84,7 +84,7 @@ export default function Home({
           setLoading(false)
         })
         .catch((error) => {
-          alert(error.response.data.message)
+          console.log(error.response.data.message)
           axios.get("/v1/auth/check").then((response) => {
             setLogged(error.response.data.isLogged)
             setLoggedUser(error.response.data.user)
