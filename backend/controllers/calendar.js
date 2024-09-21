@@ -2,6 +2,7 @@ const moment = require('moment');
 
 // Funzione per calcolare le date ricorrenti
 function calculateRecurringEvents(event) {
+  const _id = event._id;
   const events = [];
   const startDate = moment(event.start_date);
   const endDate = event.end_date ? moment(event.end_date) : null;
@@ -32,6 +33,7 @@ function calculateRecurringEvents(event) {
         // Aggiungi un evento per ogni orario specificato
         times.forEach(time => {
           events.push({
+            _id: _id + '-' + time._id,
             date: currentDate.format('YYYY-MM-DD'),
             time: formatTime(time.hour, time.minute),
             medicine_name: event.medicine_name,
