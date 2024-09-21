@@ -33,7 +33,7 @@ function calculateRecurringEvents(event) {
         // Aggiungi un evento per ogni orario specificato
         times.forEach(time => {
           events.push({
-            _id: _id + '-' + time._id,
+            _id: _id + '-' + time._id + currentDate.format('YYYY-MM-DD'),
             date: currentDate.format('YYYY-MM-DD'),
             time: formatTime(time.hour, time.minute),
             medicine_name: event.medicine_name,
