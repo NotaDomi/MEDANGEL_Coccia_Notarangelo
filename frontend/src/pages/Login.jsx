@@ -1,12 +1,15 @@
-import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalendarAlt,
   faRobot,
   faMapMarkerAlt,
-} from "@fortawesome/free-solid-svg-icons" // Importa le icone necessarie
+} from "@fortawesome/free-solid-svg-icons";
+import Modal from "react-modal";
+
+Modal.setAppElement("#root");
 
 export default function Login({
   setLogged,
@@ -14,7 +17,7 @@ export default function Login({
   setIsButtonDisabled,
   isButtonDisabled,
 }) {
-  const [signInfo, setSignInfo] = useState({ username: "", password: "" })
+  const [signInfo, setSignInfo] = useState({ username: "", password: "" });
   const [signUpInfo, setSignUpInfo] = useState({
     username: "",
     password: "",
@@ -27,68 +30,75 @@ export default function Login({
     city: "",
     address: "",
     zipCode: "",
-  })
+  });
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  let navigate = useNavigate();
 
-  const [isSignUp, setIsSignUp] = useState(false) // Gestisce il pannello attivo
-  let navigate = useNavigate()
+  axios.defaults.withCredentials = true;
 
-  axios.defaults.withCredentials = true
+  const handleCloseModal = () => {
+    setModalIsOpen(false);
+    if (shouldRedirect) {
+      axios.get("/v1/auth/check").then((response) => {
+        setLogged(response.data.isLogged)
+        setLoggedUser(response.data.user)
+      })
+      navigate("/home"); // Solo dopo la chiusura del modal
+    }
+  };
 
   const handleInfo = (e) => {
-    setSignInfo({ ...signInfo, [e.target.name]: e.target.value })
-  }
+    setSignInfo({ ...signInfo, [e.target.name]: e.target.value });
+  };
 
   const handleSignUpInfo = (e) => {
-    setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value })
-  }
+    setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value });
+  };
 
   const validatePassword = (password) => {
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/
-    const isValid = passwordRegex.test(password)
-    return isValid
-  }
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+    return passwordRegex.test(password);
+  };
 
   const handleLoginSubmit = (e) => {
-    e.preventDefault()
-    setIsButtonDisabled(true)
+    e.preventDefault();
+    setIsButtonDisabled(true);
     axios
       .post("/v1/auth/login", {
         username: signInfo.username,
         password: signInfo.password,
       })
       .then((r) => {
-        alert(r.data.message)
-        axios.get("/v1/auth/check").then((response) => {
-          setLogged(response.data.isLogged)
-          setLoggedUser(response.data.user)
-        })
-        setIsButtonDisabled(false)
-        navigate("/home")
+        setModalMessage(r.data.message);
+        setModalIsOpen(true);
+        setShouldRedirect(true);
+        // Non eseguire il reindirizzamento qui
       })
       .catch((error) => {
-        alert(error.response.data.message)
-        setSignInfo({ username: "", password: "" })
-        setIsButtonDisabled(false)
-      })
-  }
+        setModalMessage(error.response.data.message);
+        setModalIsOpen(true);
+        setSignInfo({ username: "", password: "" });
+        setIsButtonDisabled(false);
+      });
+  };
 
   const handleSignUpSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!validatePassword(signUpInfo.password)) {
-      alert(
-        "La password deve essere lunga almeno 8 caratteri, contenere almeno una lettera maiuscola, una minuscola, un numero e un simbolo (!@#$%^&*)."
-      )
-      return
+      setModalMessage("La password deve essere lunga almeno 8 caratteri, contenere almeno una lettera maiuscola, una minuscola, un numero e un simbolo (!@#$%^&*).");
+      setModalIsOpen(true);
+      return;
     }
-    setIsButtonDisabled(true)
-    // Creazione della data
-    const { birthDay, birthMonth, birthYear } = signUpInfo
-    let dataNascita = ""
+    setIsButtonDisabled(true);
+    const { birthDay, birthMonth, birthYear } = signUpInfo;
+    let dataNascita = "";
     if (birthDay && birthMonth && birthYear) {
-      // Crea una data nel formato 'YYYY-MM-DD'
-      const date = new Date(birthYear, birthMonth - 1, birthDay)
-      dataNascita = date.toString() // Converte in formato stringa completo
+      const date = new Date(birthYear, birthMonth - 1, birthDay);
+      dataNascita = date.toString();
     }
     axios
       .post("/v1/auth/register", {
@@ -96,23 +106,20 @@ export default function Login({
         password: signUpInfo.password,
         nome: signUpInfo.nome,
         cognome: signUpInfo.cognome,
-        dataNascita, // Usa la data formattata
+        dataNascita,
         sesso: signUpInfo.gender,
         citta: signUpInfo.city,
         indirizzo: signUpInfo.address,
         cap: signUpInfo.zipCode,
       })
       .then((r) => {
-        alert(r.data.message)
-        axios.get("/v1/auth/check").then((response) => {
-          setLogged(response.data.isLogged)
-          setLoggedUser(response.data.user)
-        })
-        setIsButtonDisabled(false)
-        navigate("/home")
+        setModalMessage(r.data.message);
+        setModalIsOpen(true);
+        setShouldRedirect(true);
       })
       .catch((error) => {
-        alert(error.response.data.message)
+        setModalMessage(error.response.data.message);
+        setModalIsOpen(true);
         setSignUpInfo({
           username: "",
           password: "",
@@ -125,16 +132,15 @@ export default function Login({
           city: "",
           address: "",
           zipCode: "",
-        })
-        setIsButtonDisabled(false)
+        });
       })
-  }
+      .finally(() => {
+        setIsButtonDisabled(false);
+      });
+  };
 
   return (
-    <div
-      className={`container ${isSignUp ? "right-panel-active" : ""}`}
-      id="container"
-    >
+    <div className={`container ${isSignUp ? "right-panel-active" : ""}`} id="container">
       <div className="form-container sign-up-container">
         <form onSubmit={handleSignUpSubmit}>
           <h1 className="bold">Crea il tuo Account</h1>
@@ -142,7 +148,7 @@ export default function Login({
             type="text"
             placeholder="Nome"
             name="nome"
-            value={signUpInfo.name}
+            value={signUpInfo.nome}
             onChange={handleSignUpInfo}
             required
           />
@@ -210,7 +216,7 @@ export default function Login({
                 </option>
               ))}
             </select>
-          </div>{" "}
+          </div>
           <div className="gender">
             <select
               name="gender"
@@ -222,7 +228,7 @@ export default function Login({
               <option value="M">Maschio</option>
               <option value="F">Femmina</option>
               <option value="Altro">Altro</option>
-            </select>{" "}
+            </select>
           </div>
           <input
             type="text"
@@ -256,11 +262,7 @@ export default function Login({
 
       <div className="form-container sign-in-container">
         <form onSubmit={handleLoginSubmit}>
-          <img
-            className="logoForm"
-            alt="Logo web-app"
-            src="logo-scritta1.png"
-          />
+          <img className="logoForm" alt="Logo web-app" src="logo-scritta1.png" />
           <h1 className="bold">Inserisci le tue credenziali</h1>
           <input
             type="username"
@@ -290,7 +292,7 @@ export default function Login({
             <h1>Bentornato!</h1>
             <p>
               Per usufruire dei nostri servizi ed accedere alla tua area
-              personale effettua il login con le tue credenziali
+              personale effettua il login con le tue credenziali.
             </p>
             <button className="ghost" onClick={() => setIsSignUp(false)}>
               Login
@@ -301,49 +303,41 @@ export default function Login({
             <p>
               MedAngel è una piattaforma innovativa progettata per migliorare
               l'accesso alle informazioni sanitarie attraverso un'intuitiva
-              interfaccia grafica
+              interfaccia grafica.
             </p>
             <div className="features-container">
-              {/* Prima funzionalità: Calendario per le medicine */}
               <div className="feature">
-                <FontAwesomeIcon
-                  icon={faCalendarAlt}
-                  className="feature-icon"
-                />{" "}
-                {/* Icona del calendario */}
+                <FontAwesomeIcon icon={faCalendarAlt} className="feature-icon" />
                 <p className="section-description">
                   Organizza il calendario delle tue medicine.
                 </p>
               </div>
-
-              {/* Seconda funzionalità: Chatbot medico */}
               <div className="feature">
-                <FontAwesomeIcon icon={faRobot} className="feature-icon" />{" "}
-                {/* Icona del chatbot */}
+                <FontAwesomeIcon icon={faRobot} className="feature-icon" />
                 <p className="section-description">
                   Parla con il chatbot medico disponibile 24/7.
                 </p>
               </div>
-
-              {/* Terza funzionalità: Mappa delle farmacie vicine */}
               <div className="feature">
-                <FontAwesomeIcon
-                  icon={faMapMarkerAlt}
-                  className="feature-icon"
-                />{" "}
-                {/* Icona della mappa */}
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="feature-icon" />
                 <p className="section-description">
                   Trova facilmente le farmacie più vicine a te.
                 </p>
               </div>
             </div>
-
             <button className="ghost" onClick={() => setIsSignUp(true)}>
               Registrati
             </button>
           </div>
         </div>
       </div>
+
+      {/* Modal per i messaggi */}
+      <Modal isOpen={modalIsOpen} onRequestClose={handleCloseModal} contentLabel="Messaggio">
+        <h2>Messaggio</h2>
+        <p>{modalMessage}</p>
+        <button onClick={handleCloseModal}>CHIUDI</button>
+      </Modal>
     </div>
-  )
+  );
 }
