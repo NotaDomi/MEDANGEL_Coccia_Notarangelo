@@ -79,7 +79,7 @@ export default function Navbar({ isLogged, setLogged, loggedUser, setLoggedUser 
       <Modal isOpen={modalIsOpen} onRequestClose={handleCloseModal} contentLabel="Messaggio">
         <h2>Messaggio</h2>
         <p>{modalMessage}</p>
-        <button onClick={handleConfirmLogout}>Conferma</button>
+        <button onClick={handleConfirmLogout}>CONFERMA</button>
       </Modal>
     </nav>
   );

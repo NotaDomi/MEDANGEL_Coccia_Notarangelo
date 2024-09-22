@@ -77,8 +77,8 @@ export default function Event({
       >
         <h2>Conferma Eliminazione</h2>
         <p>Sei sicuro di voler eliminare questo evento?</p>
-        <button onClick={deleteEvent}>Conferma</button>
-        <button onClick={() => setModalIsOpen(false)}>Annulla</button>
+        <button onClick={deleteEvent}>CONFERMA</button>
+        <button onClick={() => setModalIsOpen(false)}>ANNULLA</button>
       </Modal>
 
       {/* Modal per messaggio di errore */}
@@ -96,7 +96,7 @@ export default function Event({
           setErrorMessage("");
           setModalIsOpen(false);
         }}>
-          Chiudi
+          CHIUDI
         </button>
       </Modal>
     </>

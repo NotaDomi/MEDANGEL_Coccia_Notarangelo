@@ -1995,5 +1995,10 @@ z-index: 1000;
 }
 
 .custom-button {
-  width: 6vw !important; 
+  width: 6vw !important;
+}
+
+.ReactModal__Overlay--after-open button{
+  padding-left: 2vmin;
+  padding-right: 2vmin;
 }

@@ -91,7 +91,7 @@ export default function Login({
       dataNascita = date.toString() // Converte in formato stringa completo
     }
     axios
-      .post("/auth/register", {
+      .post("/v1/auth/register", {
         username: signUpInfo.username,
         password: signUpInfo.password,
         nome: signUpInfo.nome,
@@ -104,7 +104,7 @@ export default function Login({
       })
       .then((r) => {
         alert(r.data.message)
-        axios.get("/auth/check").then((response) => {
+        axios.get("/v1/auth/check").then((response) => {
           setLogged(response.data.isLogged)
           setLoggedUser(response.data.user)
         })
