@@ -437,84 +437,6 @@ select:valid {
   width: 40px;
 }
 
-footer {
-  background-color: #222;
-  color: #fff;
-  font-size: 14px;
-  bottom: 0;
-  position: fixed;
-  left: 0;
-  right: 0;
-  text-align: center;
-  z-index: 999;
-}
-
-footer p {
-  margin: 10px 0;
-}
-
-footer i {
-  color: rgba(137, 182, 177);
-}
-
-footer a {
-  color: #3c97bf;
-  text-decoration: none;
-}
-
-.userCard {
-  width: 17.5vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  padding: 20px 30px;
-  border-radius: 20px;
-  background-color: rgba(187, 196, 248, 0.9);
-  border: 1px rgba(211, 211, 211, 0.5) solid;
-  margin: 10px;
-  transition: 0.6s;
-}
-
-.userCard p {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: auto;
-  margin: 5px;
-}
-
-.userCard:hover {
-  transition: 0.6s;
-  box-shadow: 5px 5px 20px lightgray;
-  cursor: pointer;
-}
-
-.userCard .user {
-  word-break: break-all;
-  font-size: large;
-  font-weight: 400;
-  color: rgb(0, 0, 0);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-#user-container {
-  height: 80vh;
-  background-color: rgba(70, 92, 217, 0.4);
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: space-around;
-  align-content: flex-start;
-  margin: 4vh 3vw;
-  padding: 5px;
-  column-gap: 10px;
-  row-gap: 10px;
-  overflow-y: scroll;
-  border-radius: 20px;
-}
-
 nav {
   margin: 1vh;
   display: flex;
@@ -830,19 +752,6 @@ nav li:hover {
   margin-right: 1vw;
 }
 
-#aside-friends .userCard {
-  width: 65%;
-}
-
-#aside-friends > p {
-  align-self: center;
-  text-align: center;
-  margin-top: 90%;
-  margin-bottom: 90%;
-  color: rgba(187, 196, 248);
-  font-weight: bold;
-}
-
 #event-container {
   padding: 2vmin;
   grid-area: event-container;
@@ -914,32 +823,6 @@ nav li:hover {
 .week_pattern1 {
   margin: 8px 0px;
   padding: 12px 15px;
-}
-
-#chat-head {
-  border-radius: 20px;
-  flex: 0 fit-content;
-  background-color: rgba(187, 196, 248, 0.9);
-  display: flex;
-  align-content: center;
-}
-
-#chat-head > button {
-  flex: 0 35px;
-  margin: 1%;
-  width: 35px;
-  height: 35px;
-  padding: 4px 3px;
-  border-radius: 50%;
-  background-color: rgba(187, 196, 248, 0);
-  border: 0;
-}
-
-#chat-head > button:hover {
-  transition: 0.3s;
-  box-shadow: 5px 5px 20px lightgray;
-  background-color: aliceblue;
-  cursor: pointer;
 }
 
 #chat-head img {
@@ -1119,10 +1002,6 @@ nav li:hover {
     justify-content: flex-end;
   }
 
-  .userCard img {
-    width: 6vw;
-  }
-
   .button {
     font-size: 3vw;
   }
@@ -1130,11 +1009,6 @@ nav li:hover {
   #event-container h2 {
     flex: 10 fit-content;
     font-size: 1em;
-  }
-
-  #chat-head img {
-    width: 30px;
-    height: 30px;
   }
 
   #inputMessage input {
@@ -1155,17 +1029,6 @@ nav li:hover {
     max-width: 50%;
     width: fit-content;
     padding: 5px 10px 5px 10px;
-  }
-
-  #aside-friend {
-    display: flex;
-    flex-direction: row;
-    overflow-x: scroll;
-  }
-
-  #aside-friends > p {
-    margin-top: auto;
-    margin-bottom: auto;
   }
 }
 
@@ -1342,9 +1205,6 @@ nav li:hover {
   color: black;
 }
 
-.react-calendar__tile--now {
-}
-
 .faq-map {
   display: flex;
   flex-direction: column;
@@ -1453,9 +1313,6 @@ nav li:hover {
 
 .bpHeaderContainer svg[viewBox="0 0 24 24"] {
   display: none;
-}
-
-.bpHeaderContainer svg[viewBox="0 0 20 20"] {
 }
 
 .bpHeaderContentContainer[data-state="closed"] h2 {
