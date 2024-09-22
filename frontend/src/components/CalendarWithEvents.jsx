@@ -172,7 +172,7 @@ export default function CalendarWithEvents({ allEvents }) {
       >
         <h2>Promemoria</h2>
         <p>{reminderMessage}</p>
-        <button onClick={() => setModalIsOpen(false)}>Chiudi</button>
+        <button onClick={() => setModalIsOpen(false)} className="custom-button">Chiudi</button>
       </Modal>
     </div>
   );

@@ -1950,3 +1950,50 @@ input#zipCode {
 button{
   cursor: pointer !important;
 }
+
+.ReactModal__Content--after-open{
+  border-radius: 20px !important;
+  width: 41%;
+  height: 22%;
+  text-align: center; 
+  align-self: center !important;
+  align-items: center !important;
+  border-color: #659f9e !important;
+  border-width: 3px !important;
+  margin-left: 27% !important;
+  position: center;
+  z-index: 1;
+}
+
+.ReactModal__Content--after-open h2{
+  font-weight: bold !important;
+  color: #538685;
+  font-size: 1.2vw;
+}
+
+.ReactModal__Content--after-open p{
+ margin-top: 1vh !important;
+ margin-bottom: 2.5vh !important;
+ font-size: 1.1vw;
+}
+
+.ReactModal__Content--after-open button{
+  cursor: pointer !important;
+  margin-right: 1vw !important;
+  height: 2.2vw !important;
+  width: auto;
+}
+
+.ReactModal__Content--after-open button:hover{
+  transform: scale(1.05);
+  background-color: rgba(20, 156, 156, 0.792);
+  font-weight: bolder;
+}
+
+.ReactModal__Overlay--after-open{
+z-index: 1000;
+}
+
+.custom-button {
+  width: 6vw !important; 
+}
