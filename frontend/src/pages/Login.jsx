@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendarAlt,
   faRobot,
   faMapMarkerAlt,
-} from "@fortawesome/free-solid-svg-icons";
-import Modal from "react-modal";
+} from "@fortawesome/free-solid-svg-icons"
+import Modal from "react-modal"
 
-Modal.setAppElement("#root");
+Modal.setAppElement("#root")
 
 export default function Login({
   setLogged,
@@ -17,7 +17,7 @@ export default function Login({
   setIsButtonDisabled,
   isButtonDisabled,
 }) {
-  const [signInfo, setSignInfo] = useState({ username: "", password: "" });
+  const [signInfo, setSignInfo] = useState({ username: "", password: "" })
   const [signUpInfo, setSignUpInfo] = useState({
     username: "",
     password: "",
@@ -30,75 +30,75 @@ export default function Login({
     city: "",
     address: "",
     zipCode: "",
-  });
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [shouldRedirect, setShouldRedirect] = useState(false);
-  let navigate = useNavigate();
+  })
+  const [isSignUp, setIsSignUp] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalMessage, setModalMessage] = useState("")
+  const [shouldRedirect, setShouldRedirect] = useState(false)
+  let navigate = useNavigate()
 
-  axios.defaults.withCredentials = true;
+  axios.defaults.withCredentials = true
 
   const handleCloseModal = () => {
-    setModalIsOpen(false);
+    setModalIsOpen(false)
     if (shouldRedirect) {
       axios.get("/v1/auth/check").then((response) => {
         setLogged(response.data.isLogged)
         setLoggedUser(response.data.user)
       })
-      navigate("/home"); // Solo dopo la chiusura del modal
+      navigate("/home") // Solo dopo la chiusura del modal
     }
-  };
+  }
 
   const handleInfo = (e) => {
-    setSignInfo({ ...signInfo, [e.target.name]: e.target.value });
-  };
+    setSignInfo({ ...signInfo, [e.target.name]: e.target.value })
+  }
 
   const handleSignUpInfo = (e) => {
-    setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value });
-  };
+    setSignUpInfo({ ...signUpInfo, [e.target.name]: e.target.value })
+  }
 
   const validatePassword = (password) => {
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-    return passwordRegex.test(password);
-  };
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/
+    return passwordRegex.test(password)
+  }
 
   const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    setIsButtonDisabled(true);
+    e.preventDefault()
+    setIsButtonDisabled(true)
     axios
       .post("/v1/auth/login", {
         username: signInfo.username,
         password: signInfo.password,
       })
       .then((r) => {
-        setModalMessage(r.data.message);
-        setModalIsOpen(true);
-        setShouldRedirect(true);
+        setModalMessage(r.data.message)
+        setModalIsOpen(true)
+        setShouldRedirect(true)
         // Non eseguire il reindirizzamento qui
       })
       .catch((error) => {
-        setModalMessage(error.response.data.message);
-        setModalIsOpen(true);
-        setSignInfo({ username: "", password: "" });
-        setIsButtonDisabled(false);
-      });
-  };
+        setModalMessage(error.response.data.message)
+        setModalIsOpen(true)
+        setSignInfo({ username: "", password: "" })
+        setIsButtonDisabled(false)
+      })
+  }
 
   const handleSignUpSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!validatePassword(signUpInfo.password)) {
-      setModalMessage("La password deve essere lunga almeno 8 caratteri, contenere almeno una lettera maiuscola, una minuscola, un numero e un simbolo (!@#$%^&*).");
-      setModalIsOpen(true);
-      return;
+      setModalMessage("La password deve essere lunga almeno 8 caratteri, contenere almeno una lettera maiuscola, una minuscola, un numero e un simbolo (!@#$%^&*).")
+      setModalIsOpen(true)
+      return
     }
-    setIsButtonDisabled(true);
-    const { birthDay, birthMonth, birthYear } = signUpInfo;
-    let dataNascita = "";
+    setIsButtonDisabled(true)
+    const { birthDay, birthMonth, birthYear } = signUpInfo
+    let dataNascita = ""
     if (birthDay && birthMonth && birthYear) {
-      const date = new Date(birthYear, birthMonth - 1, birthDay);
-      dataNascita = date.toString();
+      const date = new Date(birthYear, birthMonth - 1, birthDay)
+      dataNascita = date.toString()
     }
     axios
       .post("/v1/auth/register", {
@@ -113,13 +113,13 @@ export default function Login({
         cap: signUpInfo.zipCode,
       })
       .then((r) => {
-        setModalMessage(r.data.message);
-        setModalIsOpen(true);
-        setShouldRedirect(true);
+        setModalMessage(r.data.message)
+        setModalIsOpen(true)
+        setShouldRedirect(true)
       })
       .catch((error) => {
-        setModalMessage(error.response.data.message);
-        setModalIsOpen(true);
+        setModalMessage(error.response.data.message)
+        setModalIsOpen(true)
         setSignUpInfo({
           username: "",
           password: "",
@@ -132,12 +132,12 @@ export default function Login({
           city: "",
           address: "",
           zipCode: "",
-        });
+        })
       })
       .finally(() => {
-        setIsButtonDisabled(false);
-      });
-  };
+        setIsButtonDisabled(false)
+      })
+  }
 
   return (
     <div className={`container ${isSignUp ? "right-panel-active" : ""}`} id="container">
@@ -339,5 +339,5 @@ export default function Login({
         <button onClick={handleCloseModal}>CHIUDI</button>
       </Modal>
     </div>
-  );
+  )
 }

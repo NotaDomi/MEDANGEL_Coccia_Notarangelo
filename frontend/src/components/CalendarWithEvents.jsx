@@ -1,76 +1,76 @@
-import React, { useState, useEffect } from "react";
-import Calendar from "react-calendar";
-import moment from "moment";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect } from "react"
+import Calendar from "react-calendar"
+import moment from "moment"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faMedkit,
   faClock,
   faCheckCircle,
-} from "@fortawesome/free-solid-svg-icons";
-import Modal from "react-modal";
-import "moment/locale/it";
+} from "@fortawesome/free-solid-svg-icons"
+import Modal from "react-modal"
+import "moment/locale/it"
 
-Modal.setAppElement("#root"); // Imposta l'elemento principale dell'app per accessibilità
+Modal.setAppElement("#root")
 
 export default function CalendarWithEvents({ allEvents }) {
-  moment.locale("it");
+  moment.locale("it")
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [eventsForSelectedDate, setEventsForSelectedDate] = useState([]);
-  const [completedEvents, setCompletedEvents] = useState({});
-  const [activeTimers, setActiveTimers] = useState([]);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [reminderMessage, setReminderMessage] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [eventsForSelectedDate, setEventsForSelectedDate] = useState([])
+  const [completedEvents, setCompletedEvents] = useState({})
+  const [activeTimers, setActiveTimers] = useState([])
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [reminderMessage, setReminderMessage] = useState("")
 
   const isEventOnDate = (date, event) => {
-    const eventDate = moment(event.date).format("YYYY-MM-DD");
-    const selectedFormattedDate = moment(date).format("YYYY-MM-DD");
-    return eventDate === selectedFormattedDate;
-  };
+    const eventDate = moment(event.date).format("YYYY-MM-DD")
+    const selectedFormattedDate = moment(date).format("YYYY-MM-DD")
+    return eventDate === selectedFormattedDate
+  }
 
   const toggleCompleted = (eventId) => {
     setCompletedEvents((prevCompleted) => ({
       ...prevCompleted,
       [eventId]: !prevCompleted[eventId],
-    }));
-  };
+    }))
+  }
 
   const setReminderTimer = (event) => {
-    const eventTime = moment(event.time, "HH:mm");
-    const now = moment();
+    const eventTime = moment(event.time, "HH:mm")
+    const now = moment()
 
     if (eventTime.isAfter(now)) {
-      const timeUntilEvent = eventTime.diff(now);
+      const timeUntilEvent = eventTime.diff(now)
       const timer = setTimeout(() => {
-        setReminderMessage(`È l'ora di prendere ${event.medicine_name}`);
-        setModalIsOpen(true); // Apri il modal
-      }, timeUntilEvent);
+        setReminderMessage(`È l'ora di prendere ${event.medicine_name}`)
+        setModalIsOpen(true)
+      }, timeUntilEvent)
 
-      setActiveTimers((prevTimers) => [...prevTimers, timer]);
+      setActiveTimers((prevTimers) => [...prevTimers, timer])
     }
-  };
+  }
 
   const onDateClick = (date) => {
-    setSelectedDate(date);
+    setSelectedDate(date)
     const eventsOnThatDate = allEvents.filter((event) =>
       isEventOnDate(date, event)
-    );
-    setEventsForSelectedDate(eventsOnThatDate);
-  };
+    )
+    setEventsForSelectedDate(eventsOnThatDate)
+  }
 
   const getDaysWithEvents = () => {
-    const daysWithEvents = new Set();
+    const daysWithEvents = new Set()
     allEvents.forEach((event) => {
-      const eventDate = moment(event.date).format("YYYY-MM-DD");
-      daysWithEvents.add(eventDate);
-    });
-    return daysWithEvents;
-  };
+      const eventDate = moment(event.date).format("YYYY-MM-DD")
+      daysWithEvents.add(eventDate)
+    })
+    return daysWithEvents
+  }
 
-  const daysWithEvents = getDaysWithEvents();
+  const daysWithEvents = getDaysWithEvents()
 
   const tileContent = ({ date }) => {
-    const formattedDate = moment(date).format("YYYY-MM-DD");
+    const formattedDate = moment(date).format("YYYY-MM-DD")
     return daysWithEvents.has(formattedDate) ? (
       <div className="tile-content">
         <FontAwesomeIcon icon={faMedkit} className="event-icon" />
@@ -79,27 +79,27 @@ export default function CalendarWithEvents({ allEvents }) {
       <div className="tile-content-no-event" style={{ color: "transparent" }}>
         o
       </div>
-    );
-  };
+    )
+  }
 
   useEffect(() => {
-    const today = moment().format("YYYY-MM-DD");
+    const today = moment().format("YYYY-MM-DD")
     const eventsToday = allEvents.filter((event) =>
       isEventOnDate(today, event)
-    );
+    )
 
-    activeTimers.forEach((timer) => clearTimeout(timer));
-    setActiveTimers([]);
+    activeTimers.forEach((timer) => clearTimeout(timer))
+    setActiveTimers([])
 
-    eventsToday.forEach((event) => setReminderTimer(event));
-  }, [allEvents]);
+    eventsToday.forEach((event) => setReminderTimer(event))
+  }, [allEvents])
 
   useEffect(() => {
     const eventsOnThatDate = allEvents.filter((event) =>
       isEventOnDate(selectedDate, event)
-    );
-    setEventsForSelectedDate(eventsOnThatDate);
-  }, [allEvents, selectedDate]);
+    )
+    setEventsForSelectedDate(eventsOnThatDate)
+  }, [allEvents, selectedDate])
 
   return (
     <div className="calendar-list">
@@ -121,9 +121,8 @@ export default function CalendarWithEvents({ allEvents }) {
                 .sort((a, b) => a.time.localeCompare(b.time))
                 .map((event) => (
                   <div
-                    className={`event-popup ${
-                      completedEvents[event._id] ? "completed" : ""
-                    }`}
+                    className={`event-popup ${completedEvents[event._id] ? "completed" : ""
+                      }`}
                     key={event._id}
                     style={{
                       textDecoration: completedEvents[event._id]
@@ -175,5 +174,5 @@ export default function CalendarWithEvents({ allEvents }) {
         <button onClick={() => setModalIsOpen(false)} className="custom-button">CHIUDI</button>
       </Modal>
     </div>
-  );
+  )
 }

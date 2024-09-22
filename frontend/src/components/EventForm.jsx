@@ -25,7 +25,6 @@ export default function EventForm({
 
   useEffect(() => {
     if (selectedEvent) {
-      // Se l'evento ha una data di inizio o di fine, formattala in "YYYY-MM-DD"
       const formattedStartDate = selectedEvent.start_date
         ? new Date(selectedEvent.start_date).toISOString().split("T")[0]
         : ""
@@ -43,24 +42,24 @@ export default function EventForm({
         time1:
           selectedEvent.time.length > 0
             ? `${selectedEvent.time[0].hour
-                .toString()
-                .padStart(2, "0")}:${selectedEvent.time[0].minute
+              .toString()
+              .padStart(2, "0")}:${selectedEvent.time[0].minute
                 .toString()
                 .padStart(2, "0")}`
             : "",
         time2:
           selectedEvent.time.length > 1
             ? `${selectedEvent.time[1].hour
-                .toString()
-                .padStart(2, "0")}:${selectedEvent.time[1].minute
+              .toString()
+              .padStart(2, "0")}:${selectedEvent.time[1].minute
                 .toString()
                 .padStart(2, "0")}`
             : "",
         time3:
           selectedEvent.time.length > 2
             ? `${selectedEvent.time[2].hour
-                .toString()
-                .padStart(2, "0")}:${selectedEvent.time[2].minute
+              .toString()
+              .padStart(2, "0")}:${selectedEvent.time[2].minute
                 .toString()
                 .padStart(2, "0")}`
             : "",
@@ -77,7 +76,6 @@ export default function EventForm({
         }
       })
 
-      // Attiviamo i campi time2 e time3 solo se hanno un valore
       setShowTime2(selectedEvent.time.length > 1)
       setShowTime3(selectedEvent.time.length > 2)
     } else {
@@ -250,7 +248,7 @@ export default function EventForm({
             name="time2"
             value={formData.time2}
             onChange={handleInputChange}
-            disabled={!showTime2} // Disabilitato se il checkbox non è selezionato
+            disabled={!showTime2}
             style={{
               backgroundColor: showTime2 ? "white" : "lightgray",
             }}
@@ -275,7 +273,7 @@ export default function EventForm({
             name="time3"
             value={formData.time3}
             onChange={handleInputChange}
-            disabled={!showTime3} // Disabilitato se il checkbox non è selezionato
+            disabled={!showTime3}
             style={{
               backgroundColor: showTime3 ? "white" : "lightgray",
             }}

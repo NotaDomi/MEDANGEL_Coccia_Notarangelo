@@ -20,7 +20,7 @@ export default function ChatBot({ loggedUser }) {
 
   if (!userId) return null
 
-  const client = getClient({ clientId, userId }) // Passa userId correttamente al client
+  const client = getClient({ clientId, userId })
 
   const config = {
     composerPlaceholder: "Cosa vorresti sapere?",
