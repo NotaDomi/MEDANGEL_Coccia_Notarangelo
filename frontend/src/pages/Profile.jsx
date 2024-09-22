@@ -118,7 +118,7 @@ export default function Profile({
       <Modal isOpen={modalIsOpen} onRequestClose={handleCloseModal} contentLabel="Messaggio">
         <h2>Messaggio</h2>
         <p>{modalMessage}</p>
-        <button onClick={handleCloseModal}>Chiudi</button>
+        <button onClick={handleCloseModal}>CHIUDI</button>
       </Modal>
     </>
   );

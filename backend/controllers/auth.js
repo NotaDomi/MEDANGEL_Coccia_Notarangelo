@@ -100,7 +100,7 @@ exports.registerUser = async (req, res) => {
     res.status(201).json({ message: 'Registrazione avvenuta con successo' });
   } catch (error) {
     console.error('Errore nella registrazione:', error);
-    res.status(500).json({ message: 'Errore interno al server' });
+    res.status(500).json({ message: 'Indirizzo non trovato' });
   }
 };
 

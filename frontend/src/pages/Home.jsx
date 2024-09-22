@@ -55,6 +55,8 @@ export default function Home({
   L.Marker.prototype.options.icon = DefaultIcon
 
   useEffect(() => {
+    console.log("isLogged:", isLogged);
+    console.log("loggedUser:", loggedUser);
     if (userResidenceLat && userResidenceLon) {
       axios
         .get("/v1/api/pharmacy/findNearbyPharmacies", {
