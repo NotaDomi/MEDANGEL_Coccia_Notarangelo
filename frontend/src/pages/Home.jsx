@@ -55,8 +55,6 @@ export default function Home({
   L.Marker.prototype.options.icon = DefaultIcon
 
   useEffect(() => {
-    console.log("isLogged:", isLogged);
-    console.log("loggedUser:", loggedUser);
     if (userResidenceLat && userResidenceLon) {
       axios
         .get("/v1/api/pharmacy/findNearbyPharmacies", {
@@ -70,7 +68,6 @@ export default function Home({
           setLoading(false)
         })
         .catch((error) => {
-          console.log(error.response.data.message)
           axios.get("/v1/auth/check").then((response) => {
             setLogged(error.response.data.isLogged)
             setLoggedUser(error.response.data.user)
@@ -86,7 +83,6 @@ export default function Home({
           setLoading(false)
         })
         .catch((error) => {
-          console.log(error.response.data.message)
           axios.get("/v1/auth/check").then((response) => {
             setLogged(error.response.data.isLogged)
             setLoggedUser(error.response.data.user)
