@@ -7,7 +7,7 @@ const { theme, style } = buildTheme({
   themeColor: "#634433",
 })
 
-const clientId = "0e9b6815-13db-4c15-8029-e480b51cfd7b"
+const clientId = process.env.CHAT_CLIENT_ID
 
 export default function ChatBot({ loggedUser }) {
   const [userId, setUserId] = useState(null)
